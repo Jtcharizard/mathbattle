@@ -66,6 +66,10 @@ js/renderer.js             Canvas 2D
 js/storage.js / io.js      persistência e JSON
 js/app.js                  interface e modos
 tests/                     runner com 60 testes
+js/renderer.js             Canvas 2D
+js/storage.js / io.js      persistência e JSON
+js/app.js                  interface e modos
+tests/                     runner com 35 testes
 LICENSE                    licença MIT
 ```
 
@@ -78,6 +82,7 @@ python3 -m http.server 8000
 ```
 
 Abra `http://localhost:8000/` para jogar e `http://localhost:8000/tests/test-runner.html` para executar os 60 testes unitários e de integração. O runner aciona o mesmo controlador usado pelo formulário para validar torneios e mostra total, aprovados, reprovados, tempo e detalhes de falhas, além de permitir nova execução.
+Abra `http://localhost:8000/` para jogar e `http://localhost:8000/tests/test-runner.html` para executar os 35 testes. O runner mostra total, aprovados, reprovados, tempo e detalhes de falhas, além de permitir nova execução.
 
 ## Exportação, importação e armazenamento
 

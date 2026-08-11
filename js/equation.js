@@ -30,5 +30,7 @@
     return'y = '+oscillation+(c[2]<0?' − ':' + ')+formatNumber(Math.abs(c[2]))+'x²';
   };
   EA.Equation=Equation;EA.EQUATION_FAMILIES=families;EA.familyLabel=function(f){return labels[f]||f;};EA.formatNumber=formatNumber;
+  Equation.prototype.text=function(){var c=this.coefficients.map(function(v){return Number(v).toFixed(2);});var s={linear:'y = '+c[0]+'x',quadratica:'y = '+c[0]+'x² + '+c[1]+'x',cubica:'y = '+c[0]+'x³ + '+c[1]+'x² + '+c[2]+'x',senoide:'y = '+c[0]+' · sen('+c[1]+'x + '+(c[2]||0)+')',cossenoide:'y = '+c[0]+' · cos('+c[1]+'x + '+(c[2]||0)+')',balistica:'arco(vy='+c[0]+', g='+c[1]+')',hibrida:'y = '+c[0]+' · sen('+c[1]+'x) + '+c[2]+'x²'};return s[this.family];};
+  EA.Equation=Equation;EA.EQUATION_FAMILIES=families;EA.familyLabel=function(f){return labels[f]||f;};
   EA.makeEquation=function(f,start,direction,c,domain){return new Equation({family:f,start:start,direction:direction,coefficients:c,domain:domain});};
 }(window.EA));
