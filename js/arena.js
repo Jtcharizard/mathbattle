@@ -1,0 +1,5 @@
+(function(EA){'use strict';function Arena(cfg,rng){this.width=cfg.width;this.height=Math.round(cfg.width*0.56);this.ground=this.height-35;this.obstacles=[];var i,w,h,x;for(i=0;i<cfg.obstacles;i+=1){w=rng.int(35,75);h=rng.int(35,110);x=rng.int(Math.round(this.width*.28),Math.round(this.width*.72)-w);this.obstacles.push({x:x,y:this.ground-h,w:w,h:h});}}
+  Arena.prototype.blocked=function(x,y,r){return this.obstacles.some(function(o){return x+r>o.x&&x-r<o.x+o.w&&y+r>o.y&&y-r<o.y+o.h;});};
+  Arena.prototype.createBots=function(cfg,rng){var bots=[],team,i,x,y,side;for(team=0;team<2;team+=1){for(i=0;i<(team?cfg.botsB:cfg.botsA);i+=1){side=team?this.width*.78:this.width*.08;x=Math.round(side+rng.range(0,this.width*.12));y=this.ground-13;while(this.blocked(x,y,13))x+=team?-18:18;bots.push(new EA.Bot({id:(team?'B':'A')+(i+1),name:'Bot '+(team?'B':'A')+(i+1),team:team?'B':'A',strategy:team?cfg.strategyB:cfg.strategyA,x:x,y:y,hp:cfg.hp,color:team?'#ff3d9a':'#32e6ff'}));}}return bots;};
+  EA.Arena=Arena;
+}(window.EA));
