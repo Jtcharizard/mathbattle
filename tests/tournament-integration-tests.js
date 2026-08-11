@@ -58,6 +58,25 @@
   test('59. todas as famílias possuem texto legível', function () { EA.EQUATION_FAMILIES.forEach(function(family){var text=EA.makeEquation(family,{x:0,y:0},1,[0.0032,-0.02,0.4],100).text();ok(text&&text.indexOf('undefined')<0&&text.indexOf('NaN')<0);}); });
   test('60. fase trigonométrica usa sinal correto', function () { var x=EA.makeEquation('senoide',{x:0,y:0},1,[2,3,-0.25],100).text();ok(x==='y = 2 · sen(3x − 0.25)'); });
 
+  test('61. configuração mínima cria 1 contra 1', function () { var g=new EA.GameEngine({seed:'1x1',botsA:1,botsB:1});ok(g.bots.length===2); });
+  test('62. configuração cria 5 contra 5', function () { var g=new EA.GameEngine({seed:'5x5',botsA:5,botsB:5});ok(g.living('A').length===5&&g.living('B').length===5); });
+  test('63. configuração cria 10 contra 10', function () { var g=new EA.GameEngine({seed:'10x10',botsA:10,botsB:10});ok(g.bots.length===20); });
+  test('64. configuração cria exatamente 40 bots', function () { var g=new EA.GameEngine({seed:'20x20',botsA:20,botsB:20});ok(g.bots.length===40&&g.living('A').length===20&&g.living('B').length===20); });
+  test('65. 40 bots permanecem dentro da arena', function () { var g=new EA.GameEngine({seed:'bounds-40',botsA:20,botsB:20,width:600,obstacles:8});ok(g.bots.every(function(b){return b.x-b.radius>=0&&b.x+b.radius<=g.arena.width&&b.y-b.radius>=0&&b.y+b.radius<=g.arena.ground;})); });
+  test('66. nenhum dos 40 bots nasce em obstáculo', function () { var g=new EA.GameEngine({seed:'blocks-40',botsA:20,botsB:20,obstacles:8});ok(g.bots.every(function(b){return !g.arena.blocked(b.x,b.y,b.radius);})); });
+  test('67. posições iniciais não se sobrepõem', function () { var g=new EA.GameEngine({seed:'overlap-40',botsA:20,botsB:20,width:600}),valid=true;g.bots.forEach(function(a,i){g.bots.slice(i+1).forEach(function(b){if(EA.distance(a,b)<a.radius+b.radius)valid=false;});});ok(valid); });
+  test('68. bots mortos não recebem turno', function () { var g=new EA.GameEngine({seed:'dead-turn',botsA:3,botsB:3,strategyA:'random',strategyB:'random'}),dead=g.bots[0];dead.applyDamage(999);g.paused=false;for(var i=0;i<8;i+=1)g.step(true);ok(dead.shots===0); });
+  test('69. alvo morto é substituído', function () { var g=new EA.GameEngine({seed:'dead-target',botsA:2,botsB:2}),shooter=g.living('A')[0],first=g.targetFor(shooter);first.applyDamage(999);var replacement=g.targetFor(shooter);ok(replacement&&replacement!==first&&replacement.alive); });
+  test('70. batalha 20 contra 20 termina no limite', function () { var g=new EA.GameEngine({seed:'large-end',botsA:20,botsB:20,strategyA:'random',strategyB:'random',turnLimit:45});g.runFast();ok(g.finished&&g.turn<=45); });
+  test('71. torneio com batalhas 20 contra 20 termina', function () { var result=new EA.TournamentController().runAll({seed:'large-tour',botsA:20,botsB:20,strategyA:'random',strategyB:'random',turnLimit:20,tournamentGames:2});ok(result.completed&&result.games===2&&result.lastGame.bots.length===40); });
+  test('72. batalha grande é determinística', function () { var cfg={seed:'large-same',botsA:20,botsB:20,strategyA:'random',strategyB:'random',turnLimit:25},a=new EA.GameEngine(cfg),b=new EA.GameEngine(cfg);a.runFast();b.runFast();ok(a.winner===b.winner&&JSON.stringify(a.history)===JSON.stringify(b.history)); });
+  test('73. seeds diferentes mudam formação grande', function () { var a=new EA.GameEngine({seed:'large-a',botsA:20,botsB:20}),b=new EA.GameEngine({seed:'large-b',botsA:20,botsB:20});ok(JSON.stringify(a.bots.map(function(x){return[x.x,x.y];}))!==JSON.stringify(b.bots.map(function(x){return[x.x,x.y];}))); });
+  test('74. pausa e retomada não avançam duas vezes', function () { var g=new EA.GameEngine({seed:'pause-safe',botsA:2,botsB:2});g.paused=true;g.step();g.step();ok(g.turn===0);g.paused=false;g.step();ok(g.turn===1); });
+  test('75. novo torneio cancela agendamento anterior', function () { var queued=[],cancelled=[],c=new EA.TournamentController({schedule:function(fn){queued.push(fn);return queued.length;},cancelSchedule:function(id){cancelled.push(id);}});c.start(config('old'));c.start(config('new'));ok(cancelled.length>=1&&c.baseConfig.seed==='new'); });
+  test('76. preset Batalha caótica aplica 10 contra 10', function () { var c=EA.chaoticConfig({seed:'chaos',botsA:2,botsB:3,turnLimit:10});ok(c.botsA===10&&c.botsB===10&&c.turnLimit>=240&&c.obstacles===4); });
+  test('77. placar informa vivos, iniciais, PV e eliminados', function () { var g=new EA.GameEngine({seed:'score',botsA:4,botsB:4,hp:100}),victim=g.living('A')[0];victim.applyDamage(999);ok(g.scoreText('A')==='3/4 ativos · 300 PV · 1 eliminados'); });
+  test('78. limites rejeitam mais de 20 bots por time', function () { var g=new EA.GameEngine({seed:'clamp',botsA:999,botsB:999});ok(g.bots.length===40); });
+
   function run() {
     var list=document.getElementById('results'),summary=document.getElementById('summary'),start=performance.now(),passed=0;
     tests.forEach(function(t){var li=document.createElement('li');try{t.fn();passed+=1;li.className='pass';li.textContent='✓ '+t.name;}catch(e){li.className='fail';li.textContent='✗ '+t.name+' — '+e.message;}list.appendChild(li);});

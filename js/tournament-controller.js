@@ -80,13 +80,28 @@
   };
 
   TournamentController.prototype.start = function (config, callbacks) {
-    var self = this;
+    var self = this, activeMatch = null;
     callbacks = callbacks || {};
     this.prepare(config);
     function next() {
+      var batch = 0;
       if (self.cancelled) return;
       try {
-        self.playMatch(self.baseConfig, self.summary.games);
+        if (!activeMatch) {
+          activeMatch = self.createGame(self.configForMatch(self.baseConfig, self.summary.games));
+          if (!activeMatch || !activeMatch.arena) throw new Error('O motor não criou uma arena válida para o torneio.');
+        }
+        while (!activeMatch.finished && batch < 12) {
+          activeMatch.step(true);
+          batch += 1;
+        }
+        if (!activeMatch.finished) {
+          self.scheduleId = self.schedule(next);
+          return;
+        }
+        if (['A', 'B', 'Empate'].indexOf(activeMatch.winner) < 0) throw new Error('A partida do torneio não produziu um resultado válido.');
+        self.record(activeMatch);
+        activeMatch = null;
         if (callbacks.progress) callbacks.progress(self.summary);
         if (self.summary.games >= self.summary.totalGames) {
           self.summary.completed = true;
