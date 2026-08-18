@@ -5,10 +5,7 @@
 ## Funcionalidades
 
 - Arena Canvas 2D com grade, eixos, obstáculos, bots, barras de vida, trajetória e impacto.
-- Partidas determinísticas por seed, de 1 a 40 bots por time, fogo amigo opcional e desempate por vida, dano e acertos.
-- Presets rápidos 5v5, 10v10, 20v20, 30v30 e 40v40, além da Batalha caótica.
-- Nove arquétipos determinísticos: Sniper, Rusher, Tank, Hunter, Avenger, Berserker, Genius, Chaos Bot e Commander.
-- Mapas procedurais Planície, Fortaleza, Cânion, Ilhas, Arena e Caos, quatro densidades e cinco modos de spawn.
+- Partidas determinísticas por seed, de 1 a 20 bots por time, fogo amigo opcional e desempate por vida, dano e acertos.
 - Sete famílias: linear, quadrática, cúbica limitada, senoide, cossenoide, arco balístico e híbrida.
 - Modos **Exibição**, **Torneio**, **Laboratório evolutivo** e **Passo a passo**.
 - Telemetria, log, placar, histórico, relatório texto e exportação/importação JSON validada.
@@ -18,7 +15,7 @@
 ## Como jogar
 
 1. Abra `index.html` ou publique a pasta no GitHub Pages.
-2. Escolha seed, modo, quantidade de bots e estratégias. O padrão é 6 × 6; os presets chegam a 40 × 40 e **Batalha caótica** prepara 10 × 10 sem iniciar automaticamente. As configurações avançadas controlam mapa, densidade, spawn, arquétipos, vida, turnos e evolução.
+2. Escolha seed, modo, quantidade de bots e estratégias. O padrão é 6 × 6; **Batalha caótica** prepara 10 × 10 sem iniciar automaticamente. Os ajustes avançados controlam vida, dano, arena, obstáculos, turnos e evolução.
 3. Clique em **Iniciar batalha**. Pause, continue, acelere ou avance um turno quando quiser.
 4. Observe a equação, família, alvo, resultado real e telemetria. No laboratório, pause e avance para inspecionar gerações.
 5. Use **Salvar campeão** após um bot evolutivo gerar um melhor indivíduo. Exporte a sessão ou um relatório quando desejar.
@@ -61,10 +58,6 @@ js/math-utils.js           geometria e limites
 js/equation.js             famílias seguras
 js/projectile.js           trajetória e colisões
 js/arena.js / bot.js       mundo e entidades
-js/map-generator.js        mapas e obstáculos procedurais
-js/spawn-manager.js        zonas e validação de spawn
-js/bot-archetypes.js       perfis e prioridades táticas
-js/camera.js               zoom, pan e enquadramento
 js/bot-strategies.js       quatro estratégias
 js/evolution-engine.js     algoritmo genético
 js/game-engine.js          turnos, dano e vitória
@@ -72,7 +65,7 @@ js/tournament-controller.js partidas, alternância e placar do torneio
 js/renderer.js             Canvas 2D
 js/storage.js / io.js      persistência e JSON
 js/app.js                  interface e modos
-tests/                     runner com 91 testes
+tests/                     runner com 78 testes
 LICENSE                    licença MIT
 ```
 
@@ -84,7 +77,7 @@ O jogo e os testes funcionam por duplo clique (`file://`). Alternativamente, qua
 python3 -m http.server 8000
 ```
 
-Abra `http://localhost:8000/` para jogar e `http://localhost:8000/tests/test-runner.html` para executar os 91 testes unitários e de integração. O runner valida determinismo, mapas, obstáculos, spawns, arquétipos, torneios e partidas de até 40 × 40, mostrando total, aprovados, reprovados, tempo e detalhes de falhas.
+Abra `http://localhost:8000/` para jogar e `http://localhost:8000/tests/test-runner.html` para executar os 78 testes unitários e de integração. O runner aciona o mesmo controlador usado pelo formulário para validar torneios, incluindo partidas de até 20 × 20, e mostra total, aprovados, reprovados, tempo e detalhes de falhas, além de permitir nova execução.
 
 ## Exportação, importação e armazenamento
 
