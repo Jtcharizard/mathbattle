@@ -1,0 +1,1 @@
+(function(EA){'use strict';function Camera(){this.zoom=1;this.x=0;this.y=0;this.dragging=false;}Camera.prototype.reset=function(){this.zoom=1;this.x=0;this.y=0;};Camera.prototype.changeZoom=function(delta){this.zoom=EA.clamp(this.zoom*delta,.65,2.6);};Camera.prototype.pan=function(dx,dy){this.x+=dx/this.zoom;this.y+=dy/this.zoom;};EA.Camera=Camera;}(window.EA));
